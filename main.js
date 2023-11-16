@@ -15,17 +15,22 @@ THEN the bot produces the warning: "Records are incomplete, but most believe Rul
 WHEN there is no known rule that the user has requested
 THEN the bot produces the warning: "Unfortunately, this rule is for premium users only. Please deposit two slips of gold-pressed latinum to hear the rule."
 */
-require('dotenv').config();
+require("dotenv").config();
 const { Client, GatewayIntentBits } = require("discord.js");
 const AllRules = require("./rules.json");
-const ParsedRules = JSON.parse(AllRules);
+const StringifiedRules = JSON.stringify(AllRules);
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+  ],
 });
 
 client.on("ready", () => {
   console.log("I am ready!");
+//   console.log(AllRules);
 });
 
 client.on("messageCreate", (message) => {
@@ -33,24 +38,32 @@ client.on("messageCreate", (message) => {
     message.channel.send("pong!");
   }
   if (message.content === "!ruleRandom") {
-    generateRandomRule();
-    postRule();
+    let ourRule = generateRandomRule();
+    message.channel.send(`Rule of Acquisition number ${ourRule.Number}: ${ourRule.Rule}`);
   }
 });
 
 generateRandomRule = () => {
-    let validRule = false;
+  let validRule = false;
+  let testNumber = 0;
+  let testedRule = {};
 
-    while(!validRule) {
+  while (!validRule) {
     //generate a random number from 1 to 285
-    testNumber = Math.floor((Math.random() * 285) + 1);
-    
-    //see whether the numbered rule is official
+    testNumber = Math.floor(Math.random() * 285 + 1);
+    console.log(`Generated number: ${testNumber}`);
 
-    //if the rule isn't official, repeat until a valid rule is found
+    //identify the object with that number
+    testedRule = AllRules.find(n=>n.Number === testNumber);
+    console.log(`Identified a rule as: ${JSON.stringify(testedRule)}`);
 
+    //see whether the numbered rule both exists and is official
+    // if it is, return the rule.
+    if (testedRule && testedRule.Official) {
+        return testedRule;
     }
-}
-
+    //if the rule isn't official, repeat until a valid rule is found
+  }
+};
 
 client.login(process.env.BOT_TOKEN);
