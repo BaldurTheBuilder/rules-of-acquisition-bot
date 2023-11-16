@@ -26,11 +26,13 @@ client.on("ready", () => {
 client.on("messageCreate", (message) => {
   if (message.content === "!ruleRandom") {
     generateRandomRule(message);
+  } else if (message.content === "!rulesHelp" || message.content === "!ruleHelp") {
+    ruleHelp(message);
   } else if (message.content.startsWith("!rule ")) {
     generateKnownRule(message);
   }
-  checkKeywords(message);
 
+  checkKeywords(message);
 });
 
 generateRandomRule = (message) => {
@@ -106,12 +108,18 @@ generateKnownRule = (message) => {
 
 checkKeywords = (message) => {
   //make sure the response doesn't endlessly cycle (sometimes the response has the keyword)
-  if(message.author.bot) return;
-  
+  if (message.author.bot) return;
+
   let givenRule;
 
   switch (true) {
-    case (message.content.includes("wooman") || message.content.includes("woman")):
+    case message.content.includes("wooman") ||
+      message.content.includes("woman") ||
+      message.content.includes("Woman") ||
+      message.content.includes("Wooman") ||
+      message.content.includes("Women") ||
+      message.content.includes("women") ||
+      message.content.includes("WOOman"):
       message.channel.send({ embeds: [WomanPicture], files: [Females] });
       break;
     case message.content.includes("Money") || message.content.includes("money"):
@@ -131,6 +139,13 @@ checkKeywords = (message) => {
     default:
       break;
   }
-}
+};
+
+ruleHelp = (message) => {
+  // post a message explaining how to use the bot.
+  message.channel.send(
+    "```This bot is presented with consent of the Ferengi Alliance with the objective of spreading Ferengi culture across the quadrant. Current commands and functionality are as follows:\n!ruleRandom: the Grand Nagus will recite one of the official Rules of Acquisition at random.\n!rule [#]: The Nagus will attempt to recall one of the 285 rules of acquisition. Warning: some rules are for premium users only. Buyer beware!\n!ruleHelp: the Nagus will recite this message. ```"
+  );
+};
 
 client.login(process.env.BOT_TOKEN);
