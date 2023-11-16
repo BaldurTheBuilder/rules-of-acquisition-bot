@@ -15,8 +15,9 @@ THEN the bot produces the warning: "Records are incomplete, but most believe Rul
 WHEN there is no known rule that the user has requested
 THEN the bot produces the warning: "Unfortunately, this rule is for premium users only. Please deposit two slips of gold-pressed latinum to hear the rule."
 */
+
 require("dotenv").config();
-const { Client, GatewayIntentBits } = require("discord.js");
+const { Client, GatewayIntentBits} = require("discord.js");
 const AllRules = require("./rules.json");
 const StringifiedRules = JSON.stringify(AllRules);
 
@@ -30,53 +31,55 @@ const client = new Client({
 
 client.on("ready", () => {
   console.log("I am ready!");
-//   console.log(AllRules);
+  //   console.log(AllRules);
 });
 
 client.on("messageCreate", (message) => {
-  if (message.content === "ping") {
-    message.channel.send("pong!");
-  }
-  else if (message.content === "!ruleRandom") {
+  if (message.content === "!ruleRandom") {
     let ourRule = generateRandomRule();
-    message.channel.send(`Rule of Acquisition number ${ourRule.Number}: ${ourRule.Rule}`);
+    message.channel.send(
+      `Rule of Acquisition number ${ourRule.Number}: ${ourRule.Rule}`
+    );
+  } else if (message.content.startsWith("!rule ")) {
+    generateKnownRule(message);
   }
-  else if(message.content.startsWith("!rule ")) {
-    let findTheNumberExpression = /\d+/;
-    let ourNumber = Number(message.content.match(findTheNumberExpression));
-    let testedRule = AllRules.find(n=>n.Number === ourNumber);
-
-    console.log(`ourNumber is: ${ourNumber} with a typeof of: ${typeof ourNumber}`);
-
-    //detect if the text after "!rule " is not a number.
-    //if so, give an error message.
-    if(!ourNumber) {
-        message.channel.send(`Apologies, but by our tabulations, you have not given us a number. A fee of one strip gold pressed latinum has been billed to your account.`);
-    }
-
-    //detect if it's a number over 285, under 1, or not an integer.
-    //If so, respond that Ferengi refuse to do business with Starfleet's Department of Temporal Investigations.
-    else if(ourNumber > 285 || ourNumber < 1 || !Number.isInteger(ourNumber)){
-        message.channel.send(`Ferengi refuse to do business with Starfleet's Department of Temporal Investigations.`);
-    }
-
-    //detect if it's an unknown rule.
-    // if so, respond that the rule is for premium users only.
-    else if(!testedRule) {
-        message.channel.send(`Unfortunately, this rule is for premium users only. Please deposit two slips of gold-pressed latinum to hear the rule.`);
-    }
-
-    //detect if the number is official. If so post without reservation.
-    else if(testedRule.Official) {
-        message.channel.send(`Rule of Acquisition number ${testedRule.Number}: ${testedRule.Rule}`);
-    }
-
-    //detect if the number is unofficial. If so post with reservation.    
-    else {
-        message.channel.send(`Records are incomplete, but most believe Rule of Acquisition number ${testedRule.Number} to be: ${testedRule.Rule}`);
-    }
+  switch (true) {
+    case message.content.includes("wooman"):
+      console.log("woman");
+      message.channel.send("WOO-man", {
+        files: [
+          {
+            attachment: {
+              url: "http://www.quickmeme.com/img/f4/f45295c776d1631e114b953721eedc1bd42a5668c0d66b5f1fe16a713ea095e3.jpg",
+            },
+          },
+        ],
+      });
+      break;
+    case message.content.includes("profit"):
+      console.log("profit");
+      break;
+    case message.content.includes("question"):
+      console.log("rule 208");
+      break;
+    case message.content.includes("knowledge"):
+      console.log("rule 74");
+      break;
+    case message.content.includes("profit"):
+      console.log("profit");
+      break;
+    case message.content.includes("profit"):
+      console.log("profit");
+      break;
+    case message.content.includes("profit"):
+      console.log("profit");
+      break;
+    case message.content.includes("profit"):
+      console.log("profit");
+      break;
+    default:
+      break;
   }
-
 });
 
 generateRandomRule = () => {
@@ -89,17 +92,61 @@ generateRandomRule = () => {
 
     //generate a random number from 1 to 285
     testNumber = Math.floor(Math.random() * 285 + 1);
-    console.log(`Generated number: ${testNumber}`);
 
     //identify the object with that number
-    testedRule = AllRules.find(n=>n.Number === testNumber);
-    console.log(`Identified a rule as: ${JSON.stringify(testedRule)}`);
+    testedRule = AllRules.find((n) => n.Number === testNumber);
 
     //see whether the numbered rule both exists and is official
     // if it is, return the rule.
     if (testedRule && testedRule.Official) {
-        return testedRule;
+      return testedRule;
     }
+  }
+};
+
+generateKnownRule = (message) => {
+  let findTheNumberExpression = /\d+/;
+  let ourNumber = Number(message.content.match(findTheNumberExpression));
+  let testedRule = AllRules.find((n) => n.Number === ourNumber);
+
+  //detect if the text after "!rule " is not a number.
+  //if so, give an error message.
+  if (!ourNumber) {
+    message.channel.send(
+      `Apologies, but by our tabulations, you have not given us a number. A fee of one strip gold pressed latinum has been billed to your account.`
+    );
+  }
+
+  //detect if it's a number over 285, under 1, or not an integer.
+  //If so, respond that Ferengi refuse to do business with Starfleet's Department of Temporal Investigations.
+  else if (ourNumber > 285 || ourNumber < 1 || !Number.isInteger(ourNumber)) {
+    message.channel.send(
+      `Ferengi refuse to do business with Starfleet's Department of Temporal Investigations.`
+    );
+  }
+
+  //detect if it's an unknown rule.
+  // if so, respond that the rule is for premium users only.
+  else if (!testedRule) {
+    message.channel.send(
+      `Unfortunately, this rule is for premium users only. Please deposit two slips of gold-pressed latinum to hear the rule.`
+    );
+  }
+
+  //detect if the number is official. If so post without reservation.
+  else if (testedRule.Official) {
+    message.channel.send(
+      `Rule of Acquisition number ${testedRule.Number}: ${testedRule.Rule}`
+    );
+  }
+
+  //detect if the number is unofficial. If so post with reservation.
+  else {
+    message.channel.send(
+      `Rule of Acquisition number ${
+        testedRule.Number
+      }: ${testedRule.Rule.trimEnd()}.. or something like that.`
+    );
   }
 };
 
