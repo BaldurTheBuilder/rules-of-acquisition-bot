@@ -26,7 +26,10 @@ client.on("ready", () => {
 client.on("messageCreate", (message) => {
   if (message.content === "!ruleRandom") {
     generateRandomRule(message);
-  } else if (message.content === "!rulesHelp" || message.content === "!ruleHelp") {
+  } else if (
+    message.content === "!rulesHelp" ||
+    message.content === "!ruleHelp"
+  ) {
     ruleHelp(message);
   } else if (message.content.startsWith("!rule ")) {
     generateKnownRule(message);
@@ -133,6 +136,14 @@ checkKeywords = (message) => {
       givenRule = AllRules.find((n) => n.Number === 74);
       message.channel.send(givenRule.Rule);
       break;
+    case message.content.includes("War") || message.content.includes("war"):
+      givenRule = AllRules.find((n) => n.Number === 34);
+      message.channel.send(givenRule.Rule);
+      break;
+    case message.content.includes("Peace") || message.content.includes("peace"):
+      givenRule = AllRules.find((n) => n.Number === 35);
+      message.channel.send(givenRule.Rule);
+      break;
     case message.content.includes("profit"):
       console.log("profit");
       break;
@@ -144,7 +155,7 @@ checkKeywords = (message) => {
 ruleHelp = (message) => {
   // post a message explaining how to use the bot.
   message.channel.send(
-    "```This bot is presented with consent of the Ferengi Alliance with the objective of spreading Ferengi culture across the quadrant. Current commands and functionality are as follows:\n!ruleRandom: the Grand Nagus will recite one of the official Rules of Acquisition at random.\n!rule [#]: The Nagus will attempt to recall one of the 285 rules of acquisition. Warning: some rules are for premium users only. Buyer beware!\n!ruleHelp: the Nagus will recite this message. ```"
+    "```This bot is presented with consent of the Ferengi Alliance with the objective of spreading Ferengi culture across the quadrant, specifically regarding the 285 Rules of Acquisition. Current commands and functionality are as follows:\n\n!ruleRandom: the Grand Nagus will recite one of the official Rules of Acquisition at random.\n!rule [#]: The Nagus will recall a given rule. Warning: some rules are for premium users only. Buyer beware!\n!ruleHelp: the Nagus will recite this message. ```"
   );
 };
 
