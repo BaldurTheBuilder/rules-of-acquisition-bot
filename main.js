@@ -105,27 +105,25 @@ generateKnownRule = (message) => {
 };
 
 checkKeywords = (message) => {
+  //make sure the response doesn't endlessly cycle (sometimes the response has the keyword)
+  if(message.author.bot) return;
+  
+  let givenRule;
+
   switch (true) {
-    case message.content.includes("wooman"):
+    case (message.content.includes("wooman") || message.content.includes("woman")):
       message.channel.send({ embeds: [WomanPicture], files: [Females] });
       break;
-    case message.content.includes("profit"):
-      console.log("profit");
+    case message.content.includes("Money") || message.content.includes("money"):
+      message.channel.send("Don't you know the first Rule of Acquisition?!?");
       break;
     case message.content.includes("question"):
-      console.log("rule 208");
+      givenRule = AllRules.find((n) => n.Number === 208);
+      message.channel.send(givenRule.Rule);
       break;
     case message.content.includes("knowledge"):
-      console.log("rule 74");
-      break;
-    case message.content.includes("profit"):
-      console.log("profit");
-      break;
-    case message.content.includes("profit"):
-      console.log("profit");
-      break;
-    case message.content.includes("profit"):
-      console.log("profit");
+      givenRule = AllRules.find((n) => n.Number === 74);
+      message.channel.send(givenRule.Rule);
       break;
     case message.content.includes("profit"):
       console.log("profit");
