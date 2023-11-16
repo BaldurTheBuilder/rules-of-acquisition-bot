@@ -37,10 +37,46 @@ client.on("messageCreate", (message) => {
   if (message.content === "ping") {
     message.channel.send("pong!");
   }
-  if (message.content === "!ruleRandom") {
+  else if (message.content === "!ruleRandom") {
     let ourRule = generateRandomRule();
     message.channel.send(`Rule of Acquisition number ${ourRule.Number}: ${ourRule.Rule}`);
   }
+  else if(message.content.startsWith("!rule ")) {
+    let findTheNumberExpression = /\d+/;
+    let ourNumber = Number(message.content.match(findTheNumberExpression));
+    let testedRule = AllRules.find(n=>n.Number === ourNumber);
+
+    console.log(`ourNumber is: ${ourNumber} with a typeof of: ${typeof ourNumber}`);
+
+    //detect if the text after "!rule " is not a number.
+    //if so, give an error message.
+    if(!ourNumber) {
+        message.channel.send(`Apologies, but by our tabulations, you have not given us a number. A fee of one strip gold pressed latinum has been billed to your account.`);
+    }
+
+    //detect if it's a number over 285, under 1, or not an integer.
+    //If so, respond that Ferengi refuse to do business with Starfleet's Department of Temporal Investigations.
+    else if(ourNumber > 285 || ourNumber < 1 || !Number.isInteger(ourNumber)){
+        message.channel.send(`Ferengi refuse to do business with Starfleet's Department of Temporal Investigations.`);
+    }
+
+    //detect if it's an unknown rule.
+    // if so, respond that the rule is for premium users only.
+    else if(!testedRule) {
+        message.channel.send(`Unfortunately, this rule is for premium users only. Please deposit two slips of gold-pressed latinum to hear the rule.`);
+    }
+
+    //detect if the number is official. If so post without reservation.
+    else if(testedRule.Official) {
+        message.channel.send(`Rule of Acquisition number ${testedRule.Number}: ${testedRule.Rule}`);
+    }
+
+    //detect if the number is unofficial. If so post with reservation.    
+    else {
+        message.channel.send(`Records are incomplete, but most believe Rule of Acquisition number ${testedRule.Number} to be: ${testedRule.Rule}`);
+    }
+  }
+
 });
 
 generateRandomRule = () => {
@@ -49,6 +85,8 @@ generateRandomRule = () => {
   let testedRule = {};
 
   while (!validRule) {
+    //if the rule isn't official, repeat until a valid rule is found
+
     //generate a random number from 1 to 285
     testNumber = Math.floor(Math.random() * 285 + 1);
     console.log(`Generated number: ${testNumber}`);
@@ -62,7 +100,6 @@ generateRandomRule = () => {
     if (testedRule && testedRule.Official) {
         return testedRule;
     }
-    //if the rule isn't official, repeat until a valid rule is found
   }
 };
 
