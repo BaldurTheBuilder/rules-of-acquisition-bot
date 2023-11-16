@@ -17,14 +17,14 @@ THEN the bot produces the warning: "Unfortunately, this rule is for premium user
 */
 
 require("dotenv").config();
-const { Client, GatewayIntentBits, AttachmentBuilder} = require("discord.js");
-const females = new AttachmentBuilder('./assets/females.jpg');
+const { Client, GatewayIntentBits, AttachmentBuilder } = require("discord.js");
+const females = new AttachmentBuilder("./assets/females.jpg");
 const AllRules = require("./rules.json");
 const embeddingImage = {
   title: "FEMALES",
   image: {
-    url: 'attachment://females.jpg',
-  }
+    url: "attachment://females.jpg",
+  },
 };
 const client = new Client({
   intents: [
@@ -41,20 +41,13 @@ client.on("ready", () => {
 
 client.on("messageCreate", (message) => {
   if (message.content === "!ruleRandom") {
-    let ourRule = generateRandomRule();
-    message.channel.send(
-      `Rule of Acquisition number ${ourRule.Number}: ${ourRule.Rule}`
-    );
+    generateRandomRule(message);
   } else if (message.content.startsWith("!rule ")) {
     generateKnownRule(message);
   }
   switch (true) {
     case message.content.includes("wooman"):
-      console.log("woman");
-
-      message.channel.send({content: "WOO-man", 
-            embeds: [embeddingImage], files: [females]
-      });
+      message.channel.send({ embeds: [embeddingImage], files: [females] });
       break;
     case message.content.includes("profit"):
       console.log("profit");
@@ -82,7 +75,7 @@ client.on("messageCreate", (message) => {
   }
 });
 
-generateRandomRule = () => {
+generateRandomRule = (message) => {
   let validRule = false;
   let testNumber = 0;
   let testedRule = {};
@@ -95,13 +88,16 @@ generateRandomRule = () => {
 
     //identify the object with that number
     testedRule = AllRules.find((n) => n.Number === testNumber);
-
+    
     //see whether the numbered rule both exists and is official
     // if it is, return the rule.
     if (testedRule && testedRule.Official) {
-      return testedRule;
+      validRule = true;
     }
   }
+  message.channel.send(
+    `Rule of Acquisition number ${testedRule.Number}: ${testedRule.Rule}`
+  );
 };
 
 generateKnownRule = (message) => {
