@@ -17,10 +17,15 @@ THEN the bot produces the warning: "Unfortunately, this rule is for premium user
 */
 
 require("dotenv").config();
-const { Client, GatewayIntentBits} = require("discord.js");
+const { Client, GatewayIntentBits, AttachmentBuilder} = require("discord.js");
+const females = new AttachmentBuilder('./assets/females.jpg');
 const AllRules = require("./rules.json");
-const StringifiedRules = JSON.stringify(AllRules);
-
+const embeddingImage = {
+  title: "FEMALES",
+  image: {
+    url: 'attachment://females.jpg',
+  }
+};
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -46,14 +51,9 @@ client.on("messageCreate", (message) => {
   switch (true) {
     case message.content.includes("wooman"):
       console.log("woman");
-      message.channel.send("WOO-man", {
-        files: [
-          {
-            attachment: {
-              url: "http://www.quickmeme.com/img/f4/f45295c776d1631e114b953721eedc1bd42a5668c0d66b5f1fe16a713ea095e3.jpg",
-            },
-          },
-        ],
+
+      message.channel.send({content: "WOO-man", 
+            embeds: [embeddingImage], files: [females]
       });
       break;
     case message.content.includes("profit"):
