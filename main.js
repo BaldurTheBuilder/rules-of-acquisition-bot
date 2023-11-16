@@ -17,6 +17,9 @@ THEN the bot produces the warning: "Unfortunately, this rule is for premium user
 */
 require('dotenv').config();
 const { Client, GatewayIntentBits } = require("discord.js");
+const AllRules = require("./rules.json");
+const ParsedRules = JSON.parse(AllRules);
+
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
 });
@@ -26,11 +29,28 @@ client.on("ready", () => {
 });
 
 client.on("messageCreate", (message) => {
-    console.log(`detected a message with content: ${message.content}, also known as: ${message}`);
   if (message.content === "ping") {
-    console.log('msg sent');
     message.channel.send("pong!");
   }
+  if (message.content === "!ruleRandom") {
+    generateRandomRule();
+    postRule();
+  }
 });
+
+generateRandomRule = () => {
+    let validRule = false;
+
+    while(!validRule) {
+    //generate a random number from 1 to 285
+    testNumber = Math.floor((Math.random() * 285) + 1);
+    
+    //see whether the numbered rule is official
+
+    //if the rule isn't official, repeat until a valid rule is found
+
+    }
+}
+
 
 client.login(process.env.BOT_TOKEN);
